@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary-container": "#004965",
+                "background": "#101415",
+                "surface-container-highest": "#323537",
+                "primary-fixed-dim": "#7bd0ff",
+                "error-container": "#93000a",
+                "tertiary-container": "#a2b2cb",
+                "on-surface-variant": "#bdc8d1",
+                "on-secondary-container": "#aeb9d0",
+                "inverse-surface": "#e0e3e5",
+                "on-tertiary": "#213145",
+                "on-primary-fixed-variant": "#004c69",
+                "on-tertiary-fixed": "#0b1c30",
+                "tertiary-fixed": "#d3e4fe",
+                "surface-container-high": "#272a2c",
+                "primary-container": "#38bdf8",
+                "surface-dim": "#101415",
+                "inverse-primary": "#00668a",
+                "on-secondary-fixed": "#111c2d",
+                "on-error-container": "#ffdad6",
+                "surface-container": "#1d2022",
+                "surface-variant": "#323537",
+                "surface-container-lowest": "#0b0f10",
+                "on-secondary": "#263143",
+                "primary": "#8ed5ff",
+                "surface-tint": "#7bd0ff",
+                "tertiary": "#bdcee7",
+                "surface": "#101415",
+                "error": "#ffb4ab",
+                "on-error": "#690005",
+                "surface-bright": "#363a3b",
+                "on-surface": "#e0e3e5",
+                "on-tertiary-container": "#35455a",
+                "on-primary": "#00354a",
+                "outline": "#87929a",
+                "inverse-on-surface": "#2d3133",
+                "tertiary-fixed-dim": "#b7c8e1",
+                "on-secondary-fixed-variant": "#3c475a",
+                "on-tertiary-fixed-variant": "#38485d",
+                "on-background": "#e0e3e5",
+                "on-primary-fixed": "#001e2c",
+                "outline-variant": "#3e484f",
+                "secondary": "#bcc7de",
+                "secondary-fixed-dim": "#bcc7de",
+                "primary-fixed": "#c4e7ff",
+                "secondary-fixed": "#d8e3fb",
+                "surface-container-low": "#191c1e",
+                "secondary-container": "#3e495d"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "gutter": "24px",
+                "base": "8px",
+                "margin-desktop": "48px",
+                "margin-mobile": "16px",
+                "container-max": "1200px",
+                "stack-lg": "120px",
+                "stack-md": "64px",
+                "stack-sm": "24px"
+            },
+            "fontFamily": {
+                "label-sm": ["Hanken Grotesk"],
+                "headline-md": ["Hanken Grotesk"],
+                "label-md": ["Hanken Grotesk"],
+                "headline-xl": ["Hanken Grotesk"],
+                "body-lg": ["Hanken Grotesk"],
+                "headline-lg-mobile": ["Hanken Grotesk"],
+                "body-md": ["Hanken Grotesk"],
+                "headline-lg": ["Hanken Grotesk"],
+                "label-caps": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-md": ["30px", {"lineHeight": "36px", "fontWeight": "600"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                "headline-xl": ["60px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .text-balance { text-wrap: balance; }
+        
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes global-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-fade-in {
+            animation: global-fade-in 1.2s ease-out forwards;
+        }
+
+        .reveal {
+            opacity: 0;
+        }
+        .reveal.active {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary/30 selection:text-primary overflow-x-hidden page-fade-in">
+<canvas id="bg-canvas"></canvas>
+<!-- TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-6 max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md tracking-tighter text-primary cursor-pointer transition-all active:opacity-70">SamWebVibes</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-caps text-label-caps text-on-surface border-b border-primary cursor-pointer transition-all active:opacity-70" href="#work">Work</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer transition-all active:opacity-70" href="#about">About</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer transition-all active:opacity-70" href="#contact">Contact</a>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 font-label-caps text-label-caps rounded hover:bg-primary-fixed-dim transition-colors active:opacity-70">
+            Let's Talk
+        </button>
+</div>
+</nav>
+<main class="relative z-10">
+<!-- Hero Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center reveal active">
+<div class="lg:col-span-8">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-6 text-balance">
+                Crafting digital experiences with quiet confidence.
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-2xl">
+                My name is Samuel I'm a web and UI/UX designer who makes beautiful works of art with the use of code. I believe web designing is an art of making functional websites that aren't just beautiful but also intuitive and easy to navigate.
+            </p>
+<div class="flex flex-wrap gap-6">
+<a class="inline-flex items-center bg-primary text-on-primary px-8 py-4 font-label-caps text-label-caps rounded hover:translate-x-1 transition-transform duration-300" href="#work">Contact Me<span class="material-symbols-outlined ml-2">arrow_forward</span></a>
+<a class="inline-flex items-center border border-outline/30 px-8 py-4 font-label-caps text-label-caps rounded text-on-surface hover:bg-surface-container transition-colors" href="#contact">
+                    Get in Touch
+                </a>
+</div>
+</div>
+</section>
+<!-- Featured Work -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg bg-surface-container-lowest/50 backdrop-blur-sm" id="work">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-baseline mb-stack-md gap-4 reveal active">
+<h2 class="font-headline-md text-headline-md text-primary">Selected Projects</h2>
+<span class="font-label-caps text-label-caps text-secondary">01 — 04</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Project Card 1 -->
+<div class="group cursor-pointer reveal active">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-lg">
+<img alt="BODOUR Architectural Lab" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP4FrwZaQo5eVXTE8Bot2IoRT2kEQByr4jPsdf_vE2ZmnUw8AYYZRG3U1j109cKwCAOdJbxWyRomiPhU4ThaJMWkDmhKCGMtd-m0MAXMKG_uit0V16YxB5vG_uwEcUqMH3UCRM-QXg00_jP2g90ZZ2tQbWhTmfI6PqHI5fDGRGTnIIwSpCgzFwkt_7Va9iB42HziRxG-ao314L4gZWlxBuYUA0Y4t1SJxYATas29jPBCJavnZ-L7lz16rS4MuOXWOe4Y5S5j0kstN_"/>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">UI/UX</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">BRANDING</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">BODOUR</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">A Landing page for a luxury fashion brand, featuring a minimalistic design an expression of much in little</p>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="https://sammyzoom.github.io/BOUDOR/">
+                        View Project
+                        <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+</a>
+</div>
+<!-- Project Card 2 -->
+<div class="group cursor-pointer md:mt-24 reveal active">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-lg">
+<img alt="De-Light Premium Lighting" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Lg7LRvhvIhxo7ID5CdSNtt-VGqsu1ulFtXEDIbkCpFfgqCKK5-UgTKioUbwTFqtszBsfvVG9llBjSnav0BFtM33ofChYdBn8TJTKndlgfq-CA9H3aPJ8SEDPOe2Q6qSGK0XThqG6ukoqnhBmXwmk_gubUL-3aczOQnVLR3xNjZyTqMXVQkCYViwGexibeplIWPWpreG3iWGR220JRAF52Besu-ZN_cxfxAA5PVzUwcv3bcwmpMRB2KS7BtZKPOMT_aPq5chFlcF7"/>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">ECOMMERCE</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">De-Light Premium Lighting</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">A high quality master piece featuring a blend of light and dark to bring out the beauty of light with dark.</p>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="https://sammyzoom.github.io/DE-LIGHT-2-/">
+                        View Project
+                        <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Skills & Expertise -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto">
+<h2 class="font-headline-md text-headline-md text-primary mb-stack-md text-center reveal active">Expertise</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<span class="material-symbols-outlined text-primary mb-4 text-[40px]">design_services</span>
+<h4 class="font-label-caps text-label-caps text-on-surface mb-2">Art Direction</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Conceptualizing visual languages that resonate.</p>
+</div>
+<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<span class="material-symbols-outlined text-primary mb-4 text-[40px]">html</span>
+<h4 class="font-label-caps text-label-caps text-on-surface mb-2">UI Development</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Translating pixels into clean, semantic code.</p>
+</div>
+<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<span class="material-symbols-outlined text-primary mb-4 text-[40px]">auto_awesome</span>
+<h4 class="font-label-caps text-label-caps text-on-surface mb-2">Experience Design</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Human-centric flows for complex platforms.</p>
+</div>
+<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<span class="material-symbols-outlined text-primary mb-4 text-[40px]">lightbulb</span>
+<h4 class="font-label-caps text-label-caps text-on-surface mb-2">Strategy</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Defining the 'Why' behind every interaction.</p>
+</div>
+</div>
+</section>
+<!-- About Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg bg-surface-container-high/50 backdrop-blur-sm text-on-surface" id="about">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-5 order-2 lg:order-1 reveal active">
+    <div class="aspect-square bg-surface-container-highest overflow-hidden rounded-lg border border-outline-variant/20 relative">
+        <div class="absolute inset-0 bg-white/[0.05] pointer-events-none mix-blend-overlay z-10"></div>
+        <img src="Portrait.PNG" alt="Samuel - Web Developer" class="w-full h-full object-cover" loading="lazy" />
+    </div>
+</div>
+
+<div class="lg:col-span-7 order-1 lg:order-2 reveal active">
+<span class="font-label-caps text-label-caps text-primary mb-4 block">MY VISION</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6">Designing for clarity in an era of complexity.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
+                    With over four years of experience in this field, and still learning i am confident in my skills to over deliver on my promises,with me on your team we are sure to smash our dead line with amazing results.
+                </p>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
+                    I help forward thinking people and bussineses stand out and excel with meticulous typography, structured grids, unique designs and a deep respect for the user's attention.
+                </p>
+<div class="flex gap-10">
+<div>
+<span class="block font-headline-md text-headline-md text-primary">12+</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Clients Served</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto" id="contact">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-5 reveal active">
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Let's build something incredible.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-10">Currently accepting new projects, reach out, chat and lets build works of art together.</p>
+<div class="space-y-6">
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 flex items-center justify-center border border-outline-variant/30 rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant block">Email</span>
+<span class="font-body-lg text-body-lg text-on-surface">samuelzoom150@gmail.com</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-4">
+<a class="w-10 h-10 flex items-center justify-center border border-outline-variant/30 rounded hover:border-primary transition-colors text-on-surface" href="#">
+<span class="font-label-caps text-label-caps">LI</span>
+</a>
+<a class="w-10 h-10 flex items-center justify-center border border-outline-variant/30 rounded hover:border-primary transition-colors text-on-surface" href="#">
+<span class="font-label-caps text-label-caps">GH</span>
+</a>
+<a class="w-10 h-10 flex items-center justify-center border border-outline-variant/30 rounded hover:border-primary transition-colors text-on-surface" href="#">
+<span class="font-label-caps text-label-caps">DB</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7 reveal active">
+    <div class="space-y-6">
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/2349110107449" 
+           target="_blank"
+           class="block w-full bg-primary hover:bg-primary-fixed-dim text-on-primary text-center py-6 rounded-xl font-label-caps text-label-caps text-lg transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg">
+            <span class="material-symbols-outlined text-3xl">chat</span>
+            CHAT WITH ME ON WHATSAPP (Fastest Reply)
+        </a>
+
+        <!-- Email Button -->
+        <a href="mailto:samuelzoom150@gmail.com?subject=Project Inquiry - SamWebVibes" 
+           class="block w-full border border-outline-variant/50 hover:bg-surface-container text-on-surface text-center py-6 rounded-xl font-label-caps text-label-caps text-lg transition-all active:scale-95 flex items-center justify-center gap-3">
+            <span class="material-symbols-outlined text-3xl">mail</span>
+            SEND ME AN EMAIL
+        </a>
+
+        <p class="text-center text-on-surface-variant text-sm pt-4">
+            I usually reply within minutes on WhatsApp during the day.<br>
+            Available right now for new projects 🔥
+        </p>
+    </div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest/80 backdrop-blur-md w-full border-t border-outline-variant/10 relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm max-w-container-max mx-auto">
+<div class="font-label-caps text-label-caps text-primary mb-4 md:mb-0">
+            SamWebVibes
+        </div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 md:mb-0">
+            © 2026 Portfolio. All rights reserved.
+        </p>
+<div class="inline-flex gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">LinkedIn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">GitHub</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Layers</a>
+</div>
+</div>
+</footer>
+<script id="bg-shader-script" type="x-shader/x-fragment">
+precision highp float;
+uniform float time;
+uniform vec2 resolution;
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    
+    // Pulsing factor - slightly modified for more "pronounced" feel
+    float pulse = (sin(time * 0.6) * 0.5 + 0.5);
+    
+    // Base colors: Obsidian and Deep Purple
+    vec3 obsidian = vec3(0.043, 0.059, 0.063);
+    vec3 deepPurple = vec3(0.176, 0.106, 0.302);
+    
+    // Create a moving organic gradient
+    float noise = sin(uv.x * 3.0 + time * 0.25) * cos(uv.y * 2.0 - time * 0.35);
+    noise += sin(uv.y * 4.0 + time * 0.45) * cos(uv.x * 3.0 - time * 0.25);
+    
+    // Mix colors based on noise and pulse - increased pulse influence for 'alive' feel
+    vec3 color = mix(obsidian, deepPurple, (noise * 0.5 + 0.5) * pulse * 0.9);
+    
+    // Add subtle edge glow
+    float edgeGlow = (1.0 - length(uv - 0.5)) * 0.25 * pulse;
+    color += deepPurple * edgeGlow;
+
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+<script>
+    // Reveal Observer
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Shader Background Implementation
+    const canvas = document.getElementById('bg-canvas');
+    const gl = canvas.getContext('webgl');
+
+    if (gl) {
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+        const fragmentShaderSource = document.getElementById('bg-shader-script').text;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const program = gl.createProgram();
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexShaderSource));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource));
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, "position");
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const timeLocation = gl.getUniformLocation(program, "time");
+        const resolutionLocation = gl.getUniformLocation(program, "resolution");
+
+        function render(time) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+    }
+
+    // Page Transition logic
+    window.addEventListener('beforeunload', () => {
+        document.body.style.transition = 'opacity 0.5s ease-in';
+        document.body.style.opacity = '0';
+    });
+</script>
+</body></html>
