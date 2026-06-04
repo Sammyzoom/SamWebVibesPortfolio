@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="scroll-smooth" lang="en"><head>
+<html class="scroll-smooth dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -37,6 +37,7 @@
                 "on-secondary": "#263143",
                 "primary": "#8ed5ff",
                 "surface-tint": "#7bd0ff",
+                "on-primary": "#00354a",
                 "tertiary": "#bdcee7",
                 "surface": "#101415",
                 "error": "#ffb4ab",
@@ -44,7 +45,6 @@
                 "surface-bright": "#363a3b",
                 "on-surface": "#e0e3e5",
                 "on-tertiary-container": "#35455a",
-                "on-primary": "#00354a",
                 "outline": "#87929a",
                 "inverse-on-surface": "#2d3133",
                 "tertiary-fixed-dim": "#b7c8e1",
@@ -108,31 +108,16 @@
         }
         .text-balance { text-wrap: balance; }
         
-        @keyframes fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .scroll-section {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
         }
         
-        @keyframes global-fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .page-fade-in {
-            animation: global-fade-in 1.2s ease-out forwards;
-        }
-
-        .reveal {
-            opacity: 0;
-        }
-        .reveal.active {
-            animation: fade-in-up 0.8s ease-out forwards;
+        .scroll-section.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
         #bg-canvas {
@@ -144,144 +129,269 @@
             z-index: -1;
             pointer-events: none;
         }
+
+        /* Glassmorphism Logic */
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .light .glass-premium {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(48px); /* Higher density blur for text legibility in light mode */
+            -webkit-backdrop-filter: blur(48px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .light {
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --text-variant: #64748b;
+            --primary-color: #0ea5e9;
+        }
+
+        .light body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .light .text-primary { color: var(--primary-color); }
+        .light .text-on-surface-variant { color: var(--text-variant); }
+        .light .bg-surface\/60 { background-color: rgba(255, 255, 255, 0.7); }
+        .light .border-white\/10 { border-color: rgba(0, 0, 0, 0.05); }
     </style>
 </head>
-<body class="bg-background text-on-background selection:bg-primary/30 selection:text-primary overflow-x-hidden page-fade-in">
+<body class="bg-background text-on-background selection:bg-primary/30 selection:text-primary overflow-x-hidden transition-colors duration-500">
 <canvas id="bg-canvas"></canvas>
 <!-- TopNavBar -->
-<nav class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
+<nav class="sticky top-0 w-full z-50 bg-surface/60 backdrop-blur-xl border-b border-white/10 transition-all">
 <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-6 max-w-container-max mx-auto">
-<div class="font-headline-md text-headline-md tracking-tighter text-primary cursor-pointer transition-all active:opacity-70">SamWebVibes</div>
+<div class="font-headline-md text-headline-md tracking-tighter text-primary cursor-pointer transition-all active:opacity-70">SamWebDev</div>
 <div class="hidden md:flex items-center gap-8">
 <a class="font-label-caps text-label-caps text-on-surface border-b border-primary cursor-pointer transition-all active:opacity-70" href="#work">Work</a>
 <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer transition-all active:opacity-70" href="#about">About</a>
 <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer transition-all active:opacity-70" href="#contact">Contact</a>
 </div>
-<button class="bg-primary text-on-primary px-6 py-3 font-label-caps text-label-caps rounded hover:bg-primary-fixed-dim transition-colors active:opacity-70">
-            Let's Talk
-        </button>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-white/10 transition-colors text-on-surface-variant" id="theme-toggle">
+<span class="material-symbols-outlined" id="theme-icon">light_mode</span>
+</button>
+<button class="bg-primary text-on-primary px-6 py-3 font-label-caps text-label-caps rounded hover:bg-primary-fixed-dim transition-colors active:opacity-70 shadow-lg shadow-primary/20">
+                Let's Talk
+            </button>
+</div>
 </div>
 </nav>
 <main class="relative z-10">
 <!-- Hero Section -->
-<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center reveal active">
-<div class="lg:col-span-8">
+<div class="scroll-section active">
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-8 glass-premium p-8 -ml-4 md:p-12 rounded-3xl">
 <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-6 text-balance">
-                Crafting digital experiences with quiet confidence.
-            </h1>
+                    Crafting digital experiences with quiet confidence.
+                </h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-2xl">
-                My name is Samuel I'm a web and UI/UX designer who makes beautiful works of art with the use of code. I believe web designing is an art of making functional websites that aren't just beautiful but also intuitive and easy to navigate.
-            </p>
+                    My name is Samuel I'm a web developer and UI/UX designer who makes beautiful works of art with the use of code. I believe web designing is an art of making functional websites that aren't just beautiful but also intuitive and easy to navigate.
+                </p>
 <div class="flex flex-wrap gap-6">
-<a class="inline-flex items-center bg-primary text-on-primary px-8 py-4 font-label-caps text-label-caps rounded hover:translate-x-1 transition-transform duration-300" href="#work">Contact Me<span class="material-symbols-outlined ml-2">arrow_forward</span></a>
-<a class="inline-flex items-center border border-outline/30 px-8 py-4 font-label-caps text-label-caps rounded text-on-surface hover:bg-surface-container transition-colors" href="#contact">
-                    Get in Touch
-                </a>
+<a class="inline-flex items-center bg-primary text-on-primary px-8 py-4 font-label-caps text-label-caps rounded hover:translate-x-1 transition-transform duration-300 shadow-lg shadow-primary/20" href="#work">Contact Me<span class="material-symbols-outlined ml-2">arrow_forward</span></a>
+<a class="inline-flex items-center border border-white/10 px-8 py-4 font-label-caps text-label-caps rounded text-on-surface hover:bg-white/5 transition-colors backdrop-blur-md" href="#contact">
+                        Get in Touch
+                    </a>
 </div>
 </div>
 </section>
-<!-- Featured Work -->
-<section class="px-margin-mobile md:px-margin-desktop py-stack-lg bg-surface-container-lowest/50 backdrop-blur-sm" id="work">
-<div class="max-w-container-max mx-auto">
-<div class="flex flex-col md:flex-row justify-between items-baseline mb-stack-md gap-4 reveal active">
-<h2 class="font-headline-md text-headline-md text-primary">Selected Projects</h2>
-<span class="font-label-caps text-label-caps text-secondary">01 — 04</span>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-<!-- Project Card 1 -->
-<div class="group cursor-pointer reveal active">
-<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-lg">
-<img alt="BODOUR Architectural Lab" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP4FrwZaQo5eVXTE8Bot2IoRT2kEQByr4jPsdf_vE2ZmnUw8AYYZRG3U1j109cKwCAOdJbxWyRomiPhU4ThaJMWkDmhKCGMtd-m0MAXMKG_uit0V16YxB5vG_uwEcUqMH3UCRM-QXg00_jP2g90ZZ2tQbWhTmfI6PqHI5fDGRGTnIIwSpCgzFwkt_7Va9iB42HziRxG-ao314L4gZWlxBuYUA0Y4t1SJxYATas29jPBCJavnZ-L7lz16rS4MuOXWOe4Y5S5j0kstN_"/>
+<!-- Featured Work - 5 Items -->
+<div class="scroll-section active" id="work">
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-baseline mb-stack-md gap-4 glass-premium p-6 rounded-2xl">
+<h2 class="font-headline-md text-headline-md text-primary">Selected Projects</h2>
+<span class="font-label-caps text-label-caps text-secondary">01 — 05</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter md:gap-y-24">
+<!-- Project Card 1 (Large Feature) -->
+<div class="group cursor-pointer md:col-span-2">
+<div class="aspect-[21/9] overflow-hidden mb-6 bg-surface-container-high rounded-3xl border border-white/5">
+<img src="BODOUR.PNG" alt="BODOUR Architectural Lab" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"/>/>
 </div>
 <div class="flex gap-2 mb-3">
 <span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">UI/UX</span>
 <span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">BRANDING</span>
 </div>
 <h3 class="font-headline-md text-headline-md text-on-surface mb-2">BODOUR</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">A Landing page for a luxury fashion brand, featuring a minimalistic design an expression of much in little</p>
-<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="https://sammyzoom.github.io/BOUDOR/">
-                        View Project
-                        <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+<div class="glass-premium p-4 rounded-xl mb-4 max-w-2xl">
+<p class="font-body-md text-body-md text-on-surface-variant">A Landing page for a luxury fashion brand, featuring a minimalistic design an expression of much in little</p>
+</div>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="#">
+                            View Project
+                            <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
 </a>
 </div>
 <!-- Project Card 2 -->
-<div class="group cursor-pointer md:mt-24 reveal active">
-<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-lg">
-<img alt="De-Light Premium Lighting" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Lg7LRvhvIhxo7ID5CdSNtt-VGqsu1ulFtXEDIbkCpFfgqCKK5-UgTKioUbwTFqtszBsfvVG9llBjSnav0BFtM33ofChYdBn8TJTKndlgfq-CA9H3aPJ8SEDPOe2Q6qSGK0XThqG6ukoqnhBmXwmk_gubUL-3aczOQnVLR3xNjZyTqMXVQkCYViwGexibeplIWPWpreG3iWGR220JRAF52Besu-ZN_cxfxAA5PVzUwcv3bcwmpMRB2KS7BtZKPOMT_aPq5chFlcF7"/>
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-3xl border border-white/5">
+<img src="De-Light.PNG" alt="De-Light Premium Lighting" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy"/>/>
 </div>
 <div class="flex gap-2 mb-3">
 <span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">ECOMMERCE</span>
 </div>
 <h3 class="font-headline-md text-headline-md text-on-surface mb-2">De-Light Premium Lighting</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">A high quality master piece featuring a blend of light and dark to bring out the beauty of light with dark.</p>
-<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="https://sammyzoom.github.io/DE-LIGHT-2-/">
-                        View Project
-                        <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+<div class="glass-premium p-4 rounded-xl mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant">A high quality master piece featuring a blend of light and dark to bring out the beauty of light.</p>
+</div>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="#">
+                            View Project
+                            <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+</a>
+</div>
+<!-- Project Card 3 -->
+<div class="group cursor-pointer md:mt-24">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-3xl border border-white/5">
+<img alt="Aura Wellness App" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABaBBaNkvBoER1pgViRvQ8JvzZ--4bUbrGBI7TzkYOdjvzvQsnRfMORuuy5AKS6rGUsvK_w-J-DdRvGAbwGQeJzGAySK6Z5H6C8YDWNEpby5TxWNR3KZKI_AZX0pIf9WhxiKhJ91Shsw8mRcgWGn0XBG9u14S-1o6lnv_EF2SwgEA-1tj6soPDG_Iss-o9vyIkMzuE2xavGgPDQiFo2EYQ--6-V1M-jt2tOCvqvn26ssGfkHn3IJv-0npOPzWPGP_4umyS-L-szYYC"/>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">MOBILE</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Aura Wellness</h3>
+<div class="glass-premium p-4 rounded-xl mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant">A mindfulness and meditation platform focusing on serene interaction patterns.</p>
+</div>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="#">
+                            View Project
+                            <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+</a>
+</div>
+<!-- Project Card 4 -->
+<div class="group cursor-pointer">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-3xl border border-white/5">
+<img alt="Nexus Crypto Dashboard" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbUhyTrNb-epVcOaSPIr2yrbP7O0jLkW9E9QmWT_dQra7A535ZmOp38GHokyUHovPA0aRZFPiFnWsff3NixlQyhkPrZi6rDwcpb-ZyW_o_HqDBSvUoBFcjeGNapRPeP2TPUnxmXPnmBqhY_tCXZvA_Eg1BSP1uVWR6dt-kjSRZ8UQmcDwKYx1RiQASH0iPQO4I9SKkimRwRdmr5o0sjW4V_Get3uDTfpsz6iElhfZYWoSUg0XnBkI8X8bfk0rj3mcdIQwJeeHOKAG3"/>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">FINTECH</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Nexus Analytics</h3>
+<div class="glass-premium p-4 rounded-xl mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant">Complex data visualization for institutional investors, simplified into a cohesive interface.</p>
+</div>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="#">
+                            View Project
+                            <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
+</a>
+</div>
+<!-- Project Card 5 -->
+<div class="group cursor-pointer md:mt-24">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-high rounded-3xl border border-white/5">
+<img alt="Velvet Editorial" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGoRiuUYoVK6EkisgyXgd3nTjEl-pd4KMnfDeQ1NEJ9vBSHaUXBt9rZkgDxIb8nNKl2ZOMmgNsqO7JBfzod4qTvWzTVifSTm3RR3MamAm5DfE1sbnsYxaqpFKpT1fbwlhN7kU88uTjZYvz1hlKFNXXkgL5_ZOP60VnRKZ9gL15QdDDQdYm09c_Fg6oRCCFRVxu3ed1vH-L59Slx-lWtOrZpeL4Yp0xMTIoOydqlWIWHDH6WYbwbYkLFtlsB0C2-rxPHYQyITPlpbkW"/>
+</div>
+<div class="flex gap-2 mb-3">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-caps text-[10px] rounded-full">MAGAZINE</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Velvet Editorial</h3>
+<div class="glass-premium p-4 rounded-xl mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant">An immersive reading experience for high-culture content, emphasizing elegant serif pairings.</p>
+</div>
+<a class="inline-flex items-center font-label-caps text-label-caps text-primary border-b border-primary/20 hover:border-primary transition-colors py-1 group" href="#">
+                            View Project
+                            <span class="material-symbols-outlined text-[16px] ml-1 transition-transform group-hover:translate-x-1">north_east</span>
 </a>
 </div>
 </div>
 </div>
 </section>
-<!-- Skills & Expertise -->
+</div>
+<!-- Video Showcase Section -->
+<div class="scroll-section">
 <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto">
-<h2 class="font-headline-md text-headline-md text-primary mb-stack-md text-center reveal active">Expertise</h2>
+<div class="text-center mb-12 glass-premium py-8 rounded-3xl mx-auto max-w-3xl">
+<span class="font-label-caps text-label-caps text-primary mb-4 block uppercase tracking-widest">Featured Motion</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Experience Design in Motion</h2>
+</div>
+<div class="relative max-w-5xl mx-auto group">
+<div class="glass-premium aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+<img alt="Motion Design Preview" class="w-full h-full object-cover opacity-60 transition-opacity group-hover:opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhliiwsEtoXrI_S2CsPWd8EMKWSxBG5ep_HaswRu4B4HWl0HLFiKtxbbSgHBvu2wxOezYcwo_ZU4kC2VbIWAOhXlQpGHR0iS9Muin5HGV5uP9LhqhUcLBIqLGHf0AlP8MiNTp2SV0R6KeXvDCbecg2OTxtDS4_1ecloBNn9-X0jNeOqsXHz8Q5504tYCWV_ntKONoN3eLCqfmiE-ecsmjJ8QaqhEVUe-XUrq9B2C28h7ypP8hWxSLefq0N1Ioa5vZfx78Myfbhe9Wq"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="w-24 h-24 rounded-full glass-premium flex items-center justify-center text-primary transform transition-all group-hover:scale-110 shadow-2xl">
+<span class="material-symbols-outlined text-[48px] ml-1">play_arrow</span>
+</button>
+</div>
+<!-- Overlay Controls -->
+<div class="absolute bottom-6 left-6 right-6 flex items-center gap-4 text-on-surface/80 font-label-sm glass-premium px-6 py-3 rounded-full backdrop-blur-md border-white/10">
+<span class="material-symbols-outlined text-sm cursor-pointer">pause</span>
+<div class="h-1.5 bg-white/10 flex-1 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%]"></div>
+</div>
+<span class="text-[10px] md:text-xs">02:14 / 05:00</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Skills & Expertise -->
+<div class="scroll-section">
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto">
+<div class="glass-premium py-6 rounded-full mb-stack-md text-center">
+<h2 class="font-headline-md text-headline-md text-primary">Expertise</h2>
+</div>
 <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
-<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<div class="p-8 glass-premium flex flex-col items-center text-center rounded-3xl hover:-translate-y-2 transition-transform duration-300">
 <span class="material-symbols-outlined text-primary mb-4 text-[40px]">design_services</span>
 <h4 class="font-label-caps text-label-caps text-on-surface mb-2">Art Direction</h4>
 <p class="font-body-md text-body-md text-on-surface-variant text-sm">Conceptualizing visual languages that resonate.</p>
 </div>
-<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<div class="p-8 glass-premium flex flex-col items-center text-center rounded-3xl hover:-translate-y-2 transition-transform duration-300">
 <span class="material-symbols-outlined text-primary mb-4 text-[40px]">html</span>
 <h4 class="font-label-caps text-label-caps text-on-surface mb-2">UI Development</h4>
 <p class="font-body-md text-body-md text-on-surface-variant text-sm">Translating pixels into clean, semantic code.</p>
 </div>
-<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<div class="p-8 glass-premium flex flex-col items-center text-center rounded-3xl hover:-translate-y-2 transition-transform duration-300">
 <span class="material-symbols-outlined text-primary mb-4 text-[40px]">auto_awesome</span>
 <h4 class="font-label-caps text-label-caps text-on-surface mb-2">Experience Design</h4>
 <p class="font-body-md text-body-md text-on-surface-variant text-sm">Human-centric flows for complex platforms.</p>
 </div>
-<div class="p-8 border border-outline-variant/20 flex flex-col items-center text-center reveal rounded-lg bg-surface-container-low/50 backdrop-blur-sm active">
+<div class="p-8 glass-premium flex flex-col items-center text-center rounded-3xl hover:-translate-y-2 transition-transform duration-300">
 <span class="material-symbols-outlined text-primary mb-4 text-[40px]">lightbulb</span>
 <h4 class="font-label-caps text-label-caps text-on-surface mb-2">Strategy</h4>
 <p class="font-body-md text-body-md text-on-surface-variant text-sm">Defining the 'Why' behind every interaction.</p>
 </div>
 </div>
 </section>
-<!-- About Section -->
-<section class="px-margin-mobile md:px-margin-desktop py-stack-lg bg-surface-container-high/50 backdrop-blur-sm text-on-surface" id="about">
-<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
-<div class="lg:col-span-5 order-2 lg:order-1 reveal active">
-    <div class="aspect-square bg-surface-container-highest overflow-hidden rounded-lg border border-outline-variant/20 relative">
-        <div class="absolute inset-0 bg-white/[0.05] pointer-events-none mix-blend-overlay z-10"></div>
-        <img src="Portrait.PNG" alt="Samuel - Web Developer" class="w-full h-full object-cover" loading="lazy" />
-    </div>
 </div>
-
-<div class="lg:col-span-7 order-1 lg:order-2 reveal active">
+<!-- About Section -->
+<div class="scroll-section" id="about">
+<section class="px-margin-mobile md:px-margin-desktop py-stack-lg relative overflow-hidden">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-5 order-2 lg:order-1">
+<div class="aspect-square bg-surface-container-highest overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+<img src="Portrait.PNG" alt="Professional Portrait" class="w-full h-full object-cover" loading="lazy"/>/>
+</div>
+</div>
+<div class="lg:col-span-7 order-1 lg:order-2 glass-premium p-8 md:p-12 rounded-3xl">
 <span class="font-label-caps text-label-caps text-primary mb-4 block">MY VISION</span>
 <h2 class="font-headline-md text-headline-md text-on-surface mb-6">Designing for clarity in an era of complexity.</h2>
 <p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
-                    With over four years of experience in this field, and still learning i am confident in my skills to over deliver on my promises,with me on your team we are sure to smash our deadline with amazing results.
-                </p>
-<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
-                    I help forward thinking people and businesses stand out and excel with meticulous typography, structured grids, unique designs and a deep respect for the user's attention.
-                </p>
+                        With over four years of experience in this field, I am confident in my skills to over deliver on my promises. With me on your team, we are sure to smash our dead line with amazing results.
+                    </p>
 <div class="flex gap-10">
-<div>
-<span class="block font-headline-md text-headline-md text-primary">12+</span>
+<div class="glass-premium px-6 py-4 rounded-2xl">
+<span class="block font-headline-md text-headline-md text-primary">7+</span>
 <span class="font-label-caps text-label-caps text-on-surface-variant">Clients Served</span>
 </div>
 </div>
 </div>
 </div>
 </section>
+</div>
 <!-- Contact Section -->
 <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto" id="contact">
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 <div class="lg:col-span-5 reveal active">
 <h2 class="font-headline-md text-headline-md text-primary mb-6">Let's build something incredible.</h2>
-<p class="font-body-md text-body-md text-on-surface-variant mb-10">Currently accepting new projects, reach out, chat and let's build works of art together.</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-10">Currently accepting new projects, reach out, chat and lets build works of art together.</p>
 <div class="space-y-6">
 <div class="flex items-center gap-4 group cursor-pointer">
 <div class="w-12 h-12 flex items-center justify-center border border-outline-variant/30 rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all">
@@ -326,7 +436,7 @@
 
         <p class="text-center text-on-surface-variant text-sm pt-4">
             I usually reply within minutes on WhatsApp during the day.<br>
-            Available right now for new projects 🔥
+            Available right now for new projects 
         </p>
     </div>
 </div>
@@ -334,73 +444,83 @@
 </section>
 </main>
 <!-- Footer -->
-<footer class="bg-surface-container-lowest/80 backdrop-blur-md w-full border-t border-outline-variant/10 relative z-10">
+<footer class="bg-surface-container-lowest/40 backdrop-blur-2xl w-full border-t border-white/10 relative z-10">
 <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm max-w-container-max mx-auto">
-<div class="font-label-caps text-label-caps text-primary mb-4 md:mb-0">
-            SamWebVibes
-        </div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4 md:mb-0">
-            © 2026 Portfolio. All rights reserved.
-        </p>
+<div class="font-label-caps text-label-caps text-primary mb-4 md:mb-0">ESTHETE</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 md:mb-0">© 2024 Portfolio. All rights reserved.</p>
 <div class="inline-flex gap-4">
 <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">LinkedIn</a>
 <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">GitHub</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Layers</a>
 </div>
 </div>
 </footer>
 <script id="bg-shader-script" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 uniform float time;
 uniform vec2 resolution;
+uniform vec3 baseCol;
+uniform vec3 pulseCol;
+uniform float isLight;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
+    float speed = time * (isLight > 0.5 ? 0.8 : 2.2);
+    vec2 center = vec2(0.5, 0.5);
+    float dist = distance(uv, center);
+    float pulse = sin(speed * 0.8) * 0.15 + 0.85;
     
-    // Pulsing factor - slightly modified for more "pronounced" feel
-    float pulse = (sin(time * 0.6) * 0.5 + 0.5);
+    // Liquid Glass Motion pattern
+    float wave1 = sin(uv.x * 6.0 + speed * 1.2) * cos(uv.y * 4.0 - speed * 0.8);
+    float wave2 = sin(uv.y * 3.0 + speed * 1.5) * cos(uv.x * 5.0 + speed * 0.5);
+    float combinedWave = (wave1 + wave2) * 0.5;
     
-    // Base colors: Obsidian and Deep Purple
-    vec3 obsidian = vec3(0.043, 0.059, 0.063);
-    vec3 deepPurple = vec3(0.176, 0.106, 0.302);
+    vec3 color = mix(baseCol, pulseCol, (0.5 + 0.5 * combinedWave) * (1.0 - dist * pulse));
     
-    // Create a moving organic gradient
-    float noise = sin(uv.x * 3.0 + time * 0.25) * cos(uv.y * 2.0 - time * 0.35);
-    noise += sin(uv.y * 4.0 + time * 0.45) * cos(uv.x * 3.0 - time * 0.25);
+    // Light mode shimmer blobs
+    if (isLight > 0.5) {
+        float blob1 = smoothstep(0.4, 0.0, distance(uv, vec2(0.3 + sin(speed*0.4)*0.2, 0.7 + cos(speed*0.3)*0.2)));
+        float blob2 = smoothstep(0.5, 0.0, distance(uv, vec2(0.8 + cos(speed*0.5)*0.15, 0.2 + sin(speed*0.4)*0.15)));
+        color = mix(color, vec3(1.0, 1.0, 1.0), (blob1 + blob2) * 0.15);
+    }
     
-    // Mix colors based on noise and pulse - increased pulse influence for 'alive' feel
-    vec3 color = mix(obsidian, deepPurple, (noise * 0.5 + 0.5) * pulse * 0.9);
-    
-    // Add subtle edge glow
-    float edgeGlow = (1.0 - length(uv - 0.5)) * 0.25 * pulse;
-    color += deepPurple * edgeGlow;
-
-    gl_FragColor = vec4(color, 1.0);
+    float shimmer = pow(max(0.0, 1.0 - distance(uv, vec2(0.5 + sin(speed*0.5)*0.3, 0.5 + cos(speed*0.4)*0.3))), 10.0);
+    gl_FragColor = vec4(color + (shimmer * (isLight > 0.5 ? 0.02 : 0.05)), 1.0);
 }
 </script>
 <script>
-    // Reveal Observer
-    const observerOptions = { threshold: 0.1 };
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, observerOptions);
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
 
-    // Shader Background Implementation
+    let isDark = true;
+
+    themeToggle.addEventListener('click', () => {
+        isDark = !isDark;
+        if (isDark) {
+            html.classList.add('dark');
+            html.classList.remove('light');
+            themeIcon.innerText = 'light_mode';
+        } else {
+            html.classList.add('light');
+            html.classList.remove('dark');
+            themeIcon.innerText = 'dark_mode';
+        }
+    });
+
+    // Intersection Observer
+    const observerOptions = { threshold: 0.1 };
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, observerOptions);
+    document.querySelectorAll('.scroll-section').forEach(el => scrollObserver.observe(el));
+
+    // Shader Background
     const canvas = document.getElementById('bg-canvas');
     const gl = canvas.getContext('webgl');
 
     if (gl) {
-        const vertexShaderSource = `
-            attribute vec2 position;
-            void main() {
-                gl_Position = vec4(position, 0.0, 1.0);
-            }
-        `;
+        const vertexShaderSource = `attribute vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }`;
         const fragmentShaderSource = document.getElementById('bg-shader-script').text;
 
         function createShader(gl, type, source) {
@@ -426,6 +546,9 @@ void main() {
 
         const timeLocation = gl.getUniformLocation(program, "time");
         const resolutionLocation = gl.getUniformLocation(program, "resolution");
+        const baseColLoc = gl.getUniformLocation(program, "baseCol");
+        const pulseColLoc = gl.getUniformLocation(program, "pulseCol");
+        const isLightLoc = gl.getUniformLocation(program, "isLight");
 
         function render(time) {
             canvas.width = window.innerWidth;
@@ -433,16 +556,22 @@ void main() {
             gl.viewport(0, 0, canvas.width, canvas.height);
             gl.uniform1f(timeLocation, time * 0.001);
             gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+            // Update shader colors based on theme
+            if (isDark) {
+                gl.uniform1f(isLightLoc, 0.0);
+                gl.uniform3f(baseColLoc, 0.04, 0.02, 0.08); // Obsidian
+                gl.uniform3f(pulseColLoc, 0.2, 0.08, 0.35); // Purple
+            } else {
+                gl.uniform1f(isLightLoc, 1.0);
+                gl.uniform3f(baseColLoc, 0.94, 0.96, 1.0);  // Clean white-ish blue
+                gl.uniform3f(pulseColLoc, 0.85, 0.92, 1.0);  // Ethereal light blue "Liquid Glass"
+            }
+
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             requestAnimationFrame(render);
         }
         requestAnimationFrame(render);
     }
-
-    // Page Transition logic
-    window.addEventListener('beforeunload', () => {
-        document.body.style.transition = 'opacity 0.5s ease-in';
-        document.body.style.opacity = '0';
-    });
 </script>
 </body></html>
